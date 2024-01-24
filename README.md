@@ -1,0 +1,2 @@
+# SmartphoneGuideBot
+スマートフォンの使い方をガイドするLINEボット
