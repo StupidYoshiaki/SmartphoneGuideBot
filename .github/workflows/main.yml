@@ -21,5 +21,5 @@ jobs:
         region: asia-northeast1
         source: ./code
         description: function trigger
-        entry_point: hello_world
+        entry_point: main
         ingress_settings: ALLOW_ALL
