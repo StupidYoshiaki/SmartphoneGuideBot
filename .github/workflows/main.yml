@@ -1,0 +1,24 @@
+name: Deploy Cloud Functions
+on:
+  push:
+    branches:
+      - "main"
+    
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - id: "auth"
+      uses: "google-github-actions/auth@v0"
+      with:
+        credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+    - id: "deploy"
+      uses: "google-github-actions/deploy-cloud-functions@v0"
+      with:
+        name: "function-1" 
+        runtime: "python310"
+        region: asia-northeast1
+        description: function trigger
+        entry_point: hello_world
+        ingress_settings: ALLOW_ALL
