@@ -67,3 +67,6 @@ def main(event: dict, context: Context) -> str:
         upload_to_bucket(target_bucket, os.path.join(temp_dir, "storage"))
 
     return "OK"
+
+
+# test
