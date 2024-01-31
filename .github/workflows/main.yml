@@ -19,6 +19,7 @@ jobs:
         name: "function-1" 
         runtime: "python310"
         region: asia-northeast1
+        source: ./code
         description: function trigger
         entry_point: hello_world
         ingress_settings: ALLOW_ALL
