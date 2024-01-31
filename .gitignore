@@ -1,3 +1,5 @@
+/secret
+/code/__pycache__
+/code/gcp.py
 /code/.env
-
-/code/__pycache__/
+/test
