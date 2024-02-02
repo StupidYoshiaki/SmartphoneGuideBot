@@ -1,43 +1,25 @@
 name: Deploy Cloud Functions
 on:
-  # 手動ormainブランチにpush時に実行
-  workflow_dispatch:
   push:
     branches:
-      - main
-
+      - "main"
+    
 jobs:
-  deploy-job:
-    runs-on: 'ubuntu-latest'
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
+  Deploy:
+    runs-on: ubuntu-latest
     steps:
-      # ソースコードのチェックアウトをする
-    - uses: 'actions/checkout@v3'
-
-    - id: 'auth'
-      name: 'Authenticate to Google Cloud'
-      # Workload Identity連携を利用してGitHub ActionsからGoogle Cloudへ認証を行う
-      uses: 'google-github-actions/auth@v1'
+    - uses: actions/checkout@v2
+    - id: "auth"
+      uses: "google-github-actions/auth@v0"
       with:
-        service_account: gha-cloudfunctions-deploy@${{ secrets.PROJECT_ID }}.iam.gserviceaccount.com
-
-    - name: 'Set up Cloud SDK'
-      # gcloudコマンドを実行するためにCloud SDKを準備する
-      uses: 'google-github-actions/setup-gcloud@v1'
-
-    - name: 'Deploy Cloud Functions gen2 Using gcloud command'
-      # gcloudコマンドを利用してCloud Functionsをデプロイする
-      run: >-
-        gcloud functions deploy ${{ secrets.CLOUD_FUNCTIONS_ID }}
-        --gen2
-        --runtime=python310
-        --region=asia-northeast1
-        --source=./code
-        --entry-point=main
-        --trigger-http
-        --no-allow-unauthenticated
-        --set-env-vars GCP_PROJECT=${{ secrets.PROJECT_ID }}
-        --run-service-account {{ secrets.PRIVATE_KEY }}@${{ secrets.PROJECT_ID }}.iam.gserviceaccount.com
+        credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+    - id: "deploy"
+      uses: "google-github-actions/deploy-cloud-functions@v0"
+      with:
+        name: "function-1" 
+        runtime: "python310"
+        region: asia-northeast1
+        source: ./code
+        description: function trigger
+        entry_point: main
+        ingress_settings: ALLOW_ALL
