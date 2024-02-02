@@ -1,25 +1,23 @@
-name: Deploy Cloud Functions
+name: Deploy to Google Cloud Functions
 on:
   push:
     branches:
-      - "main"
-    
+      - main
+
 jobs:
-  Deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - id: "auth"
-      uses: "google-github-actions/auth@v0"
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.2.0
       with:
-        credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
-    - id: "deploy"
-      uses: "google-github-actions/deploy-cloud-functions@v0"
-      with:
-        name: "function-1" 
-        runtime: "python310"
-        region: asia-northeast1
-        source: ./code
-        description: function trigger
-        entry_point: main
-        ingress_settings: ALLOW_ALL
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Deploy Function
+      run: |
+        gcloud functions deploy function-1 --gen2 --runtime python310 --trigger-http --entry-point main --source ./code --region asia-northeast1
