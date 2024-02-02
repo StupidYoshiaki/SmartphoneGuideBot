@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - id: "auth"
-      uses: "google-github-actions/setup-gcloud@v0.2.0"
+      uses: "google-github-actions/auth@v0"
       with:
         credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
     - id: "deploy"
