@@ -1,28 +1,28 @@
-# name: Deploy Cloud Functions
-# on:
-#   push:
-#     branches:
-#       - "main"
+name: Deploy Cloud Functions
+on:
+  push:
+    branches:
+      - "main"
     
-# jobs:
-#   Deploy:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v2
-#     - id: "auth"
-#       uses: "google-github-actions/auth@v0"
-#       with:
-#         credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
-#     - id: "deploy"
-#       uses: "google-github-actions/deploy-cloud-functions@v0"
-#       with:
-#         name: "function-1" 
-#         runtime: "python310"
-#         region: us-central1
-#         source: ./code
-#         description: function trigger
-#         entry_point: main
-#         ingress_settings: ALLOW_ALL
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - id: "auth"
+      uses: "google-github-actions/auth@v0"
+      with:
+        credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+    - id: "deploy"
+      uses: "google-github-actions/deploy-cloud-functions@v0"
+      with:
+        name: "function-1" 
+        runtime: "python310"
+        region: us-central1
+        source: ./code
+        description: function trigger
+        entry_point: main
+        ingress_settings: ALLOW_ALL
 
 # name: Deploy 
 
@@ -66,33 +66,43 @@
 #           --entry-point=main
 
 
-name: Deploy Cloud Functions
-on:
-  # Push時に実行
-  workflow_dispatch:
-  push:
-    branches: main
+# name: Deploy Cloud Functions
+# on:
+#   # Push時に実行
+#   workflow_dispatch:
+#   push:
+#     branches: main
 
-jobs:
-  deploy:
-    name: Deploy Functions
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - id: deploy
-        uses: google-github-actions/deploy-cloud-functions@main
-        with:
-          ## Google Cloud Functions上での名前
-          name: gcf_actions_template 
+# jobs:
+#   deploy:
+#     name: Deploy Functions
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - id: deploy
+#         uses: google-github-actions/deploy-cloud-functions@main
+#         with:
+#           ## Google Cloud Functions上での名前
+#           name: gcf_actions_template 
 
-          ## runtimeの設定．今回はpythonを指定
-          runtime: python310
+#           ## runtimeの設定．今回はpythonを指定
+#           runtime: python310
 
-          ## GCPの鍵．
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+#           ## GCPの鍵．
+#           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
-          ## Functionsにデプロイする関数名
-          entry_point: main
+#           ## Functionsにデプロイする関数名
+#           entry_point: main
 
-          ## Regionの指定．指定しないとエラーが出るかも?
-          region: asia-northeast1
+#           ## Regionの指定．指定しないとエラーが出るかも?
+#           region: asia-northeast1
+
+#           ## Functionsにデプロイするソースコードのディレクトリ
+#           source: ./code
+
+#           ## Functionsの説明
+#           description: "This is a sample function"
+
+#           ## Functionsのトリガーの設定．今回はHTTPリクエストをトリガーに設定
+#           ingress_settings: ALLOW_ALL
+
