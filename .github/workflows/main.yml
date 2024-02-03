@@ -19,9 +19,9 @@ jobs:
         name: "function-1" 
         runtime: "python310"
         region: us-central1
-        source: ./code
+        source: SmartphoneGuideBot/code
         description: function trigger
-        entry_point: main main.py
+        entry_point: main
         ingress_settings: ALLOW_ALL
 
 # name: Deploy 
@@ -60,7 +60,7 @@ jobs:
 #           --gen2 # 第二世代の場合(option)
 #           --trigger-http
 #           --allow-unauthenticated
-#           --region=asia-northeast1
+#           --region=us-central1
 #           --runtime=python310
 #           --source=./code
 #           --entry-point=main
