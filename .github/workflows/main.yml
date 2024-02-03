@@ -19,7 +19,7 @@ jobs:
         name: "function-1" 
         runtime: "python310"
         region: us-central1
-        source: ../../code
+        source: ./code
         description: function trigger
         entry_point: main
         ingress_settings: ALLOW_ALL
