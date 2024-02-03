@@ -21,6 +21,7 @@ jobs:
         region: us-central1
         description: function trigger
         entry_point: main
+        source_dir: ./code
         ingress_settings: ALLOW_ALL
 
 # name: Deploy 
