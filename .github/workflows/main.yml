@@ -18,8 +18,49 @@ jobs:
       with:
         name: "function-1" 
         runtime: "python310"
-        region: asia-northeast1
+        region: us-central1
         source: ./code
         description: function trigger
         entry_point: main main.py
         ingress_settings: ALLOW_ALL
+
+# name: Deploy 
+
+# on:
+#   pull_request:
+#     branches:
+#       - "main"
+#     types:
+#       - "closed"
+#     paths:
+#       - "sample/**"
+# jobs:
+#   Deploy:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: "read"
+#       id-token: "write"
+
+#     steps:
+#       - uses: actions/checkout@v3
+#       - id: "auth"
+#         uses: "google-github-actions/auth@v1"
+#         with:
+#           workload_identity_provider: "projects/xxxxxxxxxxxx/locations/global/workloadIdentityPools/xxxxxxxxxx/providers/xxxxxxxxxx"
+#           service_account: "xxxxxx@xxxxxx-xxxxx.iam.gserviceaccount.com"
+
+#       - name: "Set up Cloud SDK"
+#         uses: "google-github-actions/setup-gcloud@v1"
+#         with:
+#           version: ">= 363.0.0"
+
+#       - name: gcloud functions deploy
+#         run: >-
+#           gcloud functions deploy sample
+#           --gen2 # 第二世代の場合(option)
+#           --trigger-http
+#           --allow-unauthenticated
+#           --region=asia-northeast1
+#           --runtime=python310
+#           --source=./code
+#           --entry-point=main
