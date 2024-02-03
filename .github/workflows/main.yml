@@ -71,7 +71,7 @@ on:
   # Push時に実行
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: main
 
 jobs:
   deploy:
