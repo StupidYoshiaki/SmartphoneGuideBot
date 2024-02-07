@@ -5,7 +5,7 @@ on:
       - "main"
     
 jobs:
-  Deploy:
+  Deploy1:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -16,93 +16,29 @@ jobs:
     - id: "deploy"
       uses: "google-github-actions/deploy-cloud-functions@v2"
       with:
-        name: "function-1" 
+        name: "processing" 
         runtime: "python310"
         region: us-central1
         description: function trigger
         entry_point: main
-        source_dir: ./code
+        source_dir: ./src/processing
         ingress_settings: ALLOW_ALL
 
-# name: Deploy 
-
-# on:
-#   pull_request:
-#     branches:
-#       - "main"
-#     types:
-#       - "closed"
-#     paths:
-#       - "sample/**"
-# jobs:
-#   Deploy:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: "read"
-#       id-token: "write"
-
-#     steps:
-#       - uses: actions/checkout@v3
-#       - id: "auth"
-#         uses: "google-github-actions/auth@v1"
-#         with:
-#           workload_identity_provider: "projects/xxxxxxxxxxxx/locations/global/workloadIdentityPools/xxxxxxxxxx/providers/xxxxxxxxxx"
-#           service_account: "xxxxxx@xxxxxx-xxxxx.iam.gserviceaccount.com"
-
-#       - name: "Set up Cloud SDK"
-#         uses: "google-github-actions/setup-gcloud@v1"
-#         with:
-#           version: ">= 363.0.0"
-
-#       - name: gcloud functions deploy
-#         run: >-
-#           gcloud functions deploy function-1
-#           --gen2
-#           --trigger-http
-#           --allow-unauthenticated
-#           --region=us-central1
-#           --runtime=python310
-#           --source=./code
-#           --entry-point=main
-
-
-# name: Deploy Cloud Functions
-# on:
-#   # Push時に実行
-#   workflow_dispatch:
-#   push:
-#     branches: main
-
-# jobs:
-#   deploy:
-#     name: Deploy Functions
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - id: deploy
-#         uses: google-github-actions/deploy-cloud-functions@main
-#         with:
-#           ## Google Cloud Functions上での名前
-#           name: gcf_actions_template 
-
-#           ## runtimeの設定．今回はpythonを指定
-#           runtime: python310
-
-#           ## GCPの鍵．
-#           credentials: ${{ secrets.GCP_CREDENTIALS }}
-
-#           ## Functionsにデプロイする関数名
-#           entry_point: main
-
-#           ## Regionの指定．指定しないとエラーが出るかも?
-#           region: asia-northeast1
-
-#           ## Functionsにデプロイするソースコードのディレクトリ
-#           source: ./code
-
-#           ## Functionsの説明
-#           description: "This is a sample function"
-
-#           ## Functionsのトリガーの設定．今回はHTTPリクエストをトリガーに設定
-#           ingress_settings: ALLOW_ALL
-
+  Deploy2:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - id: "auth"
+      uses: "google-github-actions/auth@v2"
+      with:
+        credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+    - id: "deploy"
+      uses: "google-github-actions/deploy-cloud-functions@v2"
+      with:
+        name: "response" 
+        runtime: "python310"
+        region: us-central1
+        description: function trigger
+        entry_point: main
+        source_dir: ./src/response
+        ingress_settings: ALLOW_ALL

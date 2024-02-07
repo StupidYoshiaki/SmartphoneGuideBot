@@ -1,6 +1,4 @@
 /secret
-/code/__pycache__
-/code/gcp.py
-/code/.env
-/test
+/src/transfer/.env
 /storage
+/test
