@@ -2,3 +2,4 @@
 /src/transfer/.env
 /storage
 /test
+/src/transfer/__pycache__

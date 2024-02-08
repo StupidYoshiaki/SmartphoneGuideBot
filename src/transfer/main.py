@@ -1,6 +1,4 @@
-from google.cloud import storage
-import os
-from SmartphoneGuideBot.src.transfer.client import GoogleCloudStorageClient
+from client import GoogleCloudStorageClient
 
 
 bucket_name = "sgb-pdf-store"  # 保存先のバケット名
