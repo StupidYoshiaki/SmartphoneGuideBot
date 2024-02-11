@@ -5,16 +5,26 @@ from datetime import datetime
 
 from flask import Request, abort
 from google.cloud import firestore, storage
+
 from langchain.chat_models import ChatOpenAI
+from langchain.agents import load_tools, initialize_agent, AgentType, Tool
+
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from llama_index import (LLMPredictor, ServiceContext, PromptTemplate,
-                         StorageContext, load_index_from_storage)
+
+from llama_index import (
+    LLMPredictor,
+    ServiceContext,
+    PromptTemplate,
+    StorageContext,
+    load_index_from_storage,
+)
 from llama_index.indices.base import BaseIndex
 
+
 FILES_TO_DOWNLOAD = ["docstore.json", "index_store.json", "vector_store.json"]
-BUCKET_NAME = "udemy-vector-store"
+BUCKET_NAME = "sgb-vector-store"
 
 line_bot_api = LineBotApi(os.environ["LINE_CHANNEL_ACCESS_TOKEN"])
 handler = WebhookHandler(os.environ["LINE_CHANNEL_SECRET"])
@@ -23,7 +33,7 @@ db = firestore.Client()
 storage_client = storage.Client()
 bucket = storage_client.bucket(BUCKET_NAME)
 
-USE_HISTORY = False
+USE_HISTORY = True
 
 
 def get_object_updated_time(object_name: str) -> datetime:
@@ -101,8 +111,13 @@ def generate_response(user_message: str, history: str) -> str:
     {{context_str}}
     ---------------------
 
-    与えられた情報を元にユーザーへのアドバイスを200文字以内で出力してください。
-    文献の情報から回答できない入力の場合は、そのように出力してください。
+    以下の選択肢を踏まえて、ユーザーの質問に回答してください。
+    1. 与えられた文献を参考にして回答できる場合、文献からユーザーへのアドバイスを出力してください。
+    2. 文献の情報から正確に回答できない場合は、学習済みのデータから回答を出力してください。
+    3. 最新の情報や検索処理が必要な場合は、"unknown"のみを出力してください。
+    
+    以下のルールに従ってください。
+    1. 以上で与えられた選択肢に関する情報は一切ユーザーには提供しないでください。
 
     入力：{{query_str}}
 
@@ -141,6 +156,16 @@ def save_message_to_db(user_id: str, user_message: str, chatgpt_response: str) -
     )
 
 
+def search_information(user_message: str) -> str:
+    chat = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-0613", max_tokens=512)
+
+    tools = load_tools(["google-search"])
+    # tools = load_tools(["ddg-search"])
+
+    agent_chain = initialize_agent(tools, chat, agent=AgentType.OPENAI_MULTI_FUNCTIONS)
+    return agent_chain.run(user_message)
+
+
 ###################
 
 
@@ -170,6 +195,15 @@ def handle_message(event: MessageEvent) -> None:
         history = None
     chatgpt_response = generate_response(user_message, history)
 
-    reply_to_user(event.reply_token, chatgpt_response)
+    # チャットボットの回答が"unknown"の場合、検索エンジンを使用して情報を探す
+    if "unknown" in chatgpt_response:
+        chatgpt_response = (
+            "申し訳ありませんが、回答できる情報が見つかりませんでした。そこで、検索エンジンを使用して情報を探します。少しお待ちください。"
+        )
+        reply_to_user(event.reply_token, chatgpt_response)
+        reply_to_user(event.reply_token, search_information(user_message))
+    else:
+        reply_to_user(event.reply_token, chatgpt_response)
+
     if USE_HISTORY:
         save_message_to_db(user_id, user_message, chatgpt_response)
