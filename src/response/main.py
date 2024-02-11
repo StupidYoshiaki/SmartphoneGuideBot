@@ -111,14 +111,11 @@ def generate_response(user_message: str, history: str) -> str:
     {{context_str}}
     ---------------------
 
-    以下の選択肢を踏まえて、ユーザーの質問に回答してください。
+    以下のステップを踏んで、ユーザーの質問に回答してください。
     1. 与えられた文献を参考にして回答できる場合、文献からユーザーへのアドバイスを出力してください。
     2. 文献の情報から正確に回答できない場合は、学習済みのデータから回答を出力してください。
-    3. 最新の情報や検索処理が必要な場合は、"unknown"のみを出力してください。
+    3. ステップ1,2が不可能な場合は、"unknown"のみを出力してください。
     
-    以下のルールに従ってください。
-    1. 以上で与えられた選択肢に関する情報は一切ユーザーには提供しないでください。
-
     入力：{{query_str}}
 
     出力：
@@ -197,11 +194,8 @@ def handle_message(event: MessageEvent) -> None:
 
     # チャットボットの回答が"unknown"の場合、検索エンジンを使用して情報を探す
     if "unknown" in chatgpt_response:
-        chatgpt_response = (
-            "申し訳ありませんが、回答できる情報が見つかりませんでした。そこで、検索エンジンを使用して情報を探します。少しお待ちください。"
-        )
-        reply_to_user(event.reply_token, chatgpt_response)
-        reply_to_user(event.reply_token, search_information(user_message))
+        search_result = search_information(user_message)
+        reply_to_user(event.reply_token, search_result)
     else:
         reply_to_user(event.reply_token, chatgpt_response)
 
