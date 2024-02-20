@@ -56,8 +56,7 @@ COMMON_PROMPT = """
 """
 ```
 
-※ {question}にクエリ、{context}に文書情報が入る  
-※ https://www.ariseanalytics.com/activities/report/20230818-2/ を参照  
+※ {question}にクエリ、{context}に文書情報が入る    
 
 しかしこの場合、文書にない知識に関する質問をすると、文書に書かれていないため知らないという旨を出力する。
 
