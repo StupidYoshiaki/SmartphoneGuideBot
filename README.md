@@ -14,7 +14,7 @@ ChatGPTのAPIを用いてチャットボットを作成した。
 ChatGPTの学習データセットの中に使い方が記載されている文章があるはずなので、そのまま使えば問題はない。
 しかし、祖母が持つのはRedmi 12というマイナーなスマートフォンであるため、
 使い方を聞いても一般的なAndroidに共通した内容しか答えなかった。  
-![image](https://github.com/StupidYoshiaki/SmartphoneGuideBot/issues/2#issue-2144017012)
+![chatgpt_output](data/chatgpt.png)
 
 
 
